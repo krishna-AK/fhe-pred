@@ -52,7 +52,67 @@ The project is structured as follows:
     *   Modified the `requirements.txt` file to remove the version number for the `openfhe-python` package.
     *   Attempted to run the `setup.py` script again, but the `openfhe-python` package could still not be found.
     *   Attempted to upgrade pip and then install the `openfhe-python` package again.
-
 ## Current Status
 
-The project is currently in a state where the `openfhe-python` package cannot be installed. The next step is to determine if the `openfhe-python` package is available for Windows and, if so, how to install it correctly.
+The project is currently in a state where the `openfhe-python` package could not be installed. Here are the possible ways to install it:
+
+1.  **Using pip (for Ubuntu):**
+    ```
+    pip install openfhe==<openfhe_package_version>
+    ```
+    Find the release for your version of Ubuntu at [Python Package Index OpenFHE Releases](https://pypi.org/manage/project/openfhe/releases/).
+
+2.  **Running from Docker:**
+    See [Instructions for the Docker setup](docker/README.md) in the `openfhe-python` repository.
+
+3.  **Building from Source:**
+    *   Install the dependencies:
+        *   [OpenFHE 1.1.3+](https://github.com/openfheorg/openfhe-development)
+        *   [Python 3.6+](https://www.python.org/)
+        *   [pybind11](https://pybind11.readthedocs.io/en/stable/installing.html)
+    *   Clone the `openfhe-python` repository.
+    *   Run the following commands:
+        ```bash
+        pip install "pybind11[global]"
+        mkdir build
+        cd build
+        cmake ..  # Alternatively, cmake .. -DCMAKE_PREFIX_PATH=/path/to/installed/openfhe if you installed OpenFHE elsewhere
+        make
+        make install  # You may have to run sudo make install
+        ```
+
+## Running with Docker
+
+1.  Create a `Dockerfile` in the root directory of the project.
+2.  Build the Docker image: `docker build -t fhe-pred .`
+3.  Run the Docker container: `docker run -it fhe-pred`
+
+## Running Tests
+
+Run tests with [pytest](https://docs.pytest.org), which may be called `pytest-3` on your system. See the [testing readme](tests/README.md) for more information.
+
+```bash
+pytest [--run-long]
+```
+
+## Project Structure
+
+```
+fhe_house_price_prediction/
+├── cli.py          # Command-line interface
+├── CMakeLists.txt  # CMake configuration file
+├── config.json     # Configuration parameters for the CKKS cryptocontext
+├── data_preparation.py  # Data loading, preprocessing, and splitting
+├── fhe_inference.py # FHE-based inference using OpenFHE-Python
+├── main.cpp        # Main C++ file
+├── model_training.py  # Linear Regression model training
+├── README.md       # Project documentation
+├── requirements.txt  # Project dependencies
+├── secret_key      # Secret key file
+├── setup.py        # Script to create a virtual environment and install dependencies
+├── test_case.json  # Test case for validation
+├── X_train.csv     # Training data (features)
+└── y_train.csv     # Training data (target)
+```
+
+The next step is to try installing the `openfhe-python` package using one of the methods described above.
